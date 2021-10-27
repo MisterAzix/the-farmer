@@ -5,7 +5,11 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float speed = 5f;
     [SerializeField] private float stealthSpeed = 3f;
+    [SerializeField] private float runningSpeed = 8f;
     [SerializeField] private float mouseSensitivity = 8f;
+
+    private bool isCrouching;
+    private bool isRunning;
 
     private PlayerMotor motor;
 
@@ -16,13 +20,29 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        isCrouching = motor.GetIsCrouching();
+        isRunning = motor.GetIsRunning();
+
         float xMov = Input.GetAxis("Horizontal");
         float zMov = Input.GetAxis("Vertical");
 
         Vector3 moveHorizontal = transform.right * xMov;
         Vector3 moveVertical = transform.forward * zMov;
 
-        Vector3 velocity = (moveHorizontal + moveVertical).normalized * speed;
+        Vector3 velocity;
+
+        if(isCrouching == true)
+        {
+            velocity = (moveHorizontal + moveVertical).normalized * stealthSpeed;
+        } else if (isRunning == true && isCrouching == false)
+        {
+            velocity = (moveHorizontal + moveVertical).normalized * runningSpeed;
+        }
+        else
+        {
+            velocity = (moveHorizontal + moveVertical).normalized * speed;
+        }
+
 
         motor.Move(velocity);
 
