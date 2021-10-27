@@ -14,6 +14,7 @@ public class PlayerMotor : MonoBehaviour
     [SerializeField] private int numberOfObjects;
 
     private bool isCrouched = false;
+    private bool isRunning = false;
     private string questText;
     private float originalHeight;
 
@@ -57,6 +58,15 @@ public class PlayerMotor : MonoBehaviour
         cameraRotation = _cameraRotation;
     }
 
+    public bool GetIsCrouching()
+    {
+        return isCrouched;
+    }
+
+    public bool GetIsRunning()
+    {
+        return isRunning;
+    }
 
     private void FixedUpdate()
     {
@@ -76,7 +86,9 @@ public class PlayerMotor : MonoBehaviour
         Debug.DrawRay(cam.transform.position, cam.transform.forward * raycastDistance, Color.yellow);
         pickObjectText.SetActive(false);
         PerformHitDetection();
-        PerformCrouch();
+        toggleCrouch();
+        PerformRun();
+        Crouch();
         questTextUI.text = countObjectPicked + questText;
     }
 
@@ -106,24 +118,29 @@ public class PlayerMotor : MonoBehaviour
         }
     }
 
-    private void PerformCrouch()
+    private void PerformRun()
     {
-        if(Input.GetKeyDown("c"))
+        if(Input.GetKeyDown(KeyCode.LeftShift))
         {
-                playerCol.height = reducedHeight;
+            isRunning = true;
         }
-        if(Input.GetKeyUp("c"))
+
+        if (Input.GetKeyUp(KeyCode.LeftShift))
         {
-            
+            isRunning = false;
         }
+    }
+
+    private void toggleCrouch()
+    {
+        if (Input.GetKeyDown("c")) isCrouched = !isCrouched;
     }
 
     private void Crouch()
     {
-        playerCol.height = reducedHeight;
-    }
-    private void GotUp()
-    {
-        playerCol.height = originalHeight;
+        if(isCrouched) 
+            playerCol.height = 1;
+        else
+            playerCol.height = 2;
     }
 }
