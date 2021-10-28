@@ -76,6 +76,7 @@ public class PlayerMotor : MonoBehaviour
 
     private void Update()
     {
+        //ATH en haut à droite
         if(countObjectPicked < 2)
         {
             questText = " / " + numberOfObjects + " partie de l'amulette récupérées";
@@ -83,13 +84,17 @@ public class PlayerMotor : MonoBehaviour
         {
             questText = " / " + numberOfObjects +  " parties de l'amulette récupérées";
         }
-        Debug.DrawRay(cam.transform.position, cam.transform.forward * raycastDistance, Color.yellow);
+        questTextUI.text = countObjectPicked + questText;
         pickObjectText.SetActive(false);
+
+        //Raycast dans la scène
+        Debug.DrawRay(cam.transform.position, cam.transform.forward * raycastDistance, Color.yellow);
+
+        //Actions du joueur
         PerformHitDetection();
         toggleCrouch();
         PerformRun();
         Crouch();
-        questTextUI.text = countObjectPicked + questText;
     }
 
     private void PerformMovement()
@@ -102,7 +107,21 @@ public class PlayerMotor : MonoBehaviour
     private void PerformRotation()
     {
         rb.MoveRotation(rb.rotation * Quaternion.Euler(rotation));
-        cam.transform.Rotate(-cameraRotation);
+
+        Vector3 targetCamRotation = cam.transform.eulerAngles + -cameraRotation;
+        if(targetCamRotation.x > 360)
+            targetCamRotation.x -= 360;
+        else if (targetCamRotation.x < 0)
+            targetCamRotation.x += 360;
+
+        if(targetCamRotation.x > 0 && targetCamRotation.x < 70)
+        {
+            cam.transform.eulerAngles = targetCamRotation;
+        }
+        else if(targetCamRotation.x > (360 - 70) && targetCamRotation.x < 360)
+        {
+            cam.transform.eulerAngles = targetCamRotation;
+        }
     }
 
     private void PerformHitDetection()
