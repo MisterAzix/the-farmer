@@ -5,13 +5,17 @@ using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour
 {
+    public float radius;
+    [Range(0, 360)]
+    public float angle;
+
     [SerializeField] private NavMeshAgent agent;
-
+    public GameObject playerRef;
     [SerializeField] private Transform player;
-
     [SerializeField] private Animator animator;
 
-    [SerializeField] private LayerMask whatIsGround, whatIsPlayer;
+    [SerializeField] LayerMask whatIsGround, whatIsPlayer;
+    public LayerMask obstructionMask;
 
     //Patroling
     [SerializeField] private Vector3 walkPoint;
@@ -23,29 +27,71 @@ public class Enemy : MonoBehaviour
     private bool alreadyAttacked;
 
     //States
-    [SerializeField] private float sightRange, attackRange;
-    [SerializeField] private bool playerInSightRange, playerInAttackRange;
+    public float soundRange, attackRange;
+    private bool playerInSoundRange, playerInAttackRange;
+
+    [SerializeField] public bool canSeePlayer;
+
+    private PlayerController playerController;
 
     private void Awake()
     {
-        player = GameObject.Find("Player").transform;
+        playerRef = GameObject.Find("Player");
+        player = playerRef.transform;
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
+        playerController = playerRef.GetComponent<PlayerController>();
+
+        StartCoroutine(FOVRoutine());
+    }
+
+    private IEnumerator FOVRoutine()
+    {
+        WaitForSeconds wait = new WaitForSeconds(0.2f);
+
+        while (true)
+        {
+            yield return wait;
+            FieldOfViewCheck();
+        }
+    }
+
+    private void FieldOfViewCheck()
+    {
+        bool rangeCheck = Physics.CheckSphere(transform.position, radius, whatIsPlayer);
+
+        if (rangeCheck)
+        {
+            Vector3 directionToTarget = (player.position - transform.position).normalized;
+
+            if (Vector3.Angle(transform.forward, directionToTarget) < angle / 2)
+            {
+                float distanceToTarget = Vector3.Distance(transform.position, player.position);
+
+                if (!Physics.Raycast(transform.position, directionToTarget, distanceToTarget, obstructionMask))
+                    canSeePlayer = true;
+                else
+                    canSeePlayer = false;
+            }
+            else
+                canSeePlayer = false;
+        }
+        else if (canSeePlayer)
+            canSeePlayer = false;
     }
 
     private void Update()
     {
         //Check for sight and attack range
-        playerInSightRange = Physics.CheckSphere(transform.position, sightRange, whatIsPlayer);
+        playerInSoundRange = Physics.CheckSphere(transform.position, soundRange, whatIsPlayer) && playerController.isRunning;
         playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, whatIsPlayer);
 
-        animator.SetFloat("Speed", 0);
+        if (!playerInAttackRange && !canSeePlayer) Patroling();
+        if (!playerInAttackRange && playerInSoundRange || !playerInAttackRange && canSeePlayer) ChasePlayer();
+        if (playerInSoundRange && playerInAttackRange) AttackPlayer();
 
-        if (!playerInSightRange && !playerInAttackRange) Patroling();
-        if (playerInSightRange && !playerInAttackRange) ChasePlayer();
-        if (playerInSightRange && playerInAttackRange) AttackPlayer();
-
-        animator.SetFloat("Speed", agent.velocity.magnitude);
+        if (agent.velocity.magnitude < 1f) animator.SetFloat("Speed", 0);
+        else animator.SetFloat("Speed", agent.velocity.magnitude);
     }
 
     private void Patroling()
@@ -58,7 +104,6 @@ public class Enemy : MonoBehaviour
         Vector3 distanceToWalkPoint = transform.position - walkPoint;
 
         //WalkPoint reached
-        Debug.Log(distanceToWalkPoint.magnitude);
         if (distanceToWalkPoint.magnitude < 3f) walkPointSet = false;
     }
 

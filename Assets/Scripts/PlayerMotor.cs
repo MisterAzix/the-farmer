@@ -31,7 +31,6 @@ public class PlayerMotor : MonoBehaviour
 
     private CapsuleCollider playerCol;
 
-
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
