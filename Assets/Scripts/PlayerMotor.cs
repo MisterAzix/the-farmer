@@ -156,9 +156,17 @@ public class PlayerMotor : MonoBehaviour
 
     private void Crouch()
     {
-        if(isCrouched) 
-            playerCol.height = 1;
-        else
+        if(isCrouched)
+        {
             playerCol.height = 2;
+            //playerCol.center.y = 0;
+        }
+            
+        else
+        {
+            playerCol.height = 4;
+            //playerCol.center.y = 2;
+        }
+            
     }
 }
