@@ -8,8 +8,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float runningSpeed = 8f;
     [SerializeField] private float mouseSensitivity = 8f;
 
-    private bool isCrouching;
-    private bool isRunning;
+    public bool isCrouching;
+    public bool isRunning;
 
     private PlayerMotor motor;
 
@@ -34,7 +34,8 @@ public class PlayerController : MonoBehaviour
         if(isCrouching == true)
         {
             velocity = (moveHorizontal + moveVertical).normalized * stealthSpeed;
-        } else if (isRunning == true && isCrouching == false)
+        } 
+        else if (isRunning && isCrouching)
         {
             velocity = (moveHorizontal + moveVertical).normalized * runningSpeed;
         }
