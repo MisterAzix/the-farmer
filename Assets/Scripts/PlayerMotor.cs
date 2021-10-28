@@ -40,7 +40,7 @@ public class PlayerMotor : MonoBehaviour
 
     private void Awake()
     {
-        pickObjectText.SetActive(false);
+        if (pickObjectText) pickObjectText.SetActive(false);
     }
 
     public void Move(Vector3 _velocity)
@@ -84,7 +84,7 @@ public class PlayerMotor : MonoBehaviour
             questText = " / " + numberOfObjects +  " parties de l'amulette récupérées";
         }
         questTextUI.text = countObjectPicked + questText;
-        pickObjectText.SetActive(false);
+        if (pickObjectText) pickObjectText.SetActive(false);
 
         //Raycast dans la scène
         Debug.DrawRay(cam.transform.position, cam.transform.forward * raycastDistance, Color.yellow);
@@ -127,7 +127,7 @@ public class PlayerMotor : MonoBehaviour
     {
         if (Physics.Raycast(cam.transform.position, cam.transform.forward, out hit, raycastDistance, LayerMask.GetMask("Pickable Object")))
         {
-            pickObjectText.SetActive(true);
+            if(pickObjectText) pickObjectText.SetActive(true);
             if(Input.GetKeyDown("e"))
             {
                 countObjectPicked++;
