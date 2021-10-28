@@ -5,29 +5,32 @@ using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour
 {
-    [SerializeField] NavMeshAgent agent;
+    [SerializeField] private NavMeshAgent agent;
 
-    [SerializeField] Transform player;
+    [SerializeField] private Transform player;
 
-    [SerializeField] LayerMask whatIsGround, whatIsPlayer;
+    [SerializeField] private Animator animator;
+
+    [SerializeField] private LayerMask whatIsGround, whatIsPlayer;
 
     //Patroling
-    [SerializeField] Vector3 walkPoint;
-    bool walkPointSet;
-    [SerializeField] float walkPointRange;
+    [SerializeField] private Vector3 walkPoint;
+    private bool walkPointSet;
+    [SerializeField] private float walkPointRange;
 
     //Attacking
-    [SerializeField] float timeBetweenAttacks;
-    bool alreadyAttacked;
+    [SerializeField] private float timeBetweenAttacks;
+    private bool alreadyAttacked;
 
     //States
-    [SerializeField] float sightRange, attackRange;
-    [SerializeField] bool playerInSightRange, playerInAttackRange;
+    [SerializeField] private float sightRange, attackRange;
+    [SerializeField] private bool playerInSightRange, playerInAttackRange;
 
     private void Awake()
     {
         player = GameObject.Find("Player").transform;
         agent = GetComponent<NavMeshAgent>();
+        animator = GetComponent<Animator>();
     }
 
     private void Update()
@@ -36,23 +39,27 @@ public class Enemy : MonoBehaviour
         playerInSightRange = Physics.CheckSphere(transform.position, sightRange, whatIsPlayer);
         playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, whatIsPlayer);
 
+        animator.SetFloat("Speed", 0);
+
         if (!playerInSightRange && !playerInAttackRange) Patroling();
         if (playerInSightRange && !playerInAttackRange) ChasePlayer();
-        if (playerInSightRange && playerInAttackRange) ChasePlayer();
+        if (playerInSightRange && playerInAttackRange) AttackPlayer();
+
+        animator.SetFloat("Speed", agent.velocity.magnitude);
     }
 
     private void Patroling()
     {
-        if (!walkPointSet) SearchWalkPoint();
+        animator.SetFloat("Speed", 0.5f);
 
-        if (walkPointSet) 
-            agent.SetDestination(walkPoint);
+        if (!walkPointSet) SearchWalkPoint();
+        if (walkPointSet) agent.SetDestination(walkPoint);
 
         Vector3 distanceToWalkPoint = transform.position - walkPoint;
 
         //WalkPoint reached
-        if (distanceToWalkPoint.magnitude < 1f) 
-            walkPointSet = false;
+        Debug.Log(distanceToWalkPoint.magnitude);
+        if (distanceToWalkPoint.magnitude < 3f) walkPointSet = false;
     }
 
     private void SearchWalkPoint()
@@ -63,8 +70,7 @@ public class Enemy : MonoBehaviour
 
         walkPoint = new Vector3(transform.position.x + randomX, transform.position.y, transform.position.z + randomZ);
 
-        if (Physics.Raycast(walkPoint, transform.up, 2f, whatIsGround)) 
-            walkPointSet = true;
+        if (Physics.Raycast(walkPoint, -transform.up, 2f, whatIsGround)) walkPointSet = true;
     }
 
     private void ChasePlayer()
@@ -74,6 +80,24 @@ public class Enemy : MonoBehaviour
 
     private void AttackPlayer()
     {
+        agent.SetDestination(transform.position);
 
+        Vector3 playerDir = player.transform.position - transform.position;
+        Quaternion playerRotation = Quaternion.LookRotation(playerDir);
+        transform.eulerAngles = new Vector3(0, playerRotation.eulerAngles.y, 0);
+
+        if (!alreadyAttacked)
+        {
+            //Attack code
+            animator.SetTrigger("Attack");
+
+            alreadyAttacked = true;
+            Invoke(nameof(ResetAttack), timeBetweenAttacks);
+        }
+    }
+
+    private void ResetAttack()
+    {
+        alreadyAttacked = false;
     }
 }
