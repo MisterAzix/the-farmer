@@ -83,7 +83,7 @@ public class PlayerMotor : MonoBehaviour
         {
             questText = " / " + numberOfObjects +  " parties de l'amulette récupérées";
         }
-        questTextUI.text = countObjectPicked + questText;
+        if (questTextUI) questTextUI.text = countObjectPicked + questText;
         if (pickObjectText) pickObjectText.SetActive(false);
 
         //Raycast dans la scène
