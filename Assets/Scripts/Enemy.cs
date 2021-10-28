@@ -27,10 +27,12 @@ public class Enemy : MonoBehaviour
     private bool alreadyAttacked;
 
     //States
-    [SerializeField] private float sightRange, attackRange;
-    private bool playerInSightRange, playerInAttackRange;
+    public float soundRange, attackRange;
+    private bool playerInSoundRange, playerInAttackRange;
 
     [SerializeField] public bool canSeePlayer;
+
+    private PlayerController playerController;
 
     private void Awake()
     {
@@ -38,6 +40,7 @@ public class Enemy : MonoBehaviour
         player = playerRef.transform;
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
+        playerController = playerRef.GetComponent<PlayerController>();
 
         StartCoroutine(FOVRoutine());
     }
@@ -80,12 +83,12 @@ public class Enemy : MonoBehaviour
     private void Update()
     {
         //Check for sight and attack range
-        playerInSightRange = Physics.CheckSphere(transform.position, sightRange, whatIsPlayer);
+        playerInSoundRange = Physics.CheckSphere(transform.position, soundRange, whatIsPlayer) && playerController.isRunning;
         playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, whatIsPlayer);
 
         if (!playerInAttackRange && !canSeePlayer) Patroling();
-        if (!playerInAttackRange && canSeePlayer) ChasePlayer();
-        if (playerInSightRange && playerInAttackRange) AttackPlayer();
+        if (!playerInAttackRange && playerInSoundRange || !playerInAttackRange && canSeePlayer) ChasePlayer();
+        if (playerInSoundRange && playerInAttackRange) AttackPlayer();
 
         if (agent.velocity.magnitude < 1f) animator.SetFloat("Speed", 0);
         else animator.SetFloat("Speed", agent.velocity.magnitude);
