@@ -19,7 +19,8 @@ public class Menu : MonoBehaviour
 
     public AudioClip menuSong;
     public AudioClip playSong;
-    public AudioSource audioSource;
+    public AudioSource audioSourceMenu;
+    public AudioSource audioSourcePlay;
 
     private bool startGame = false;
 
@@ -27,8 +28,8 @@ public class Menu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        audioSource.clip = menuSong;
-        audioSource.Play();
+        audioSourceMenu.clip = menuSong;
+        audioSourceMenu.Play();
         startButton.onClick.AddListener(StartGame);
         quitButton.onClick.AddListener(QuitGame);
         creditButton.onClick.AddListener(Credit);
@@ -37,8 +38,8 @@ public class Menu : MonoBehaviour
 
     private void StartGame()
     {
-        audioSource.clip = playSong;
-        audioSource.Play();
+        audioSourcePlay.clip = playSong;
+        audioSourcePlay.Play();
         startGame = true;
         Time.timeScale = 1f;
         startButtonObject.SetActive(false);
