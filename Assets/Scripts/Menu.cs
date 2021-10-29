@@ -17,11 +17,18 @@ public class Menu : MonoBehaviour
     [SerializeField] private Transform gameCamPosition;
     [SerializeField] private GameObject Player;
 
-    private bool startGame;
+    public AudioClip menuSong;
+    public AudioClip playSong;
+    public AudioSource audioSource;
+
+    private bool startGame = false;
+
 
     // Start is called before the first frame update
     void Start()
     {
+        audioSource.clip = menuSong;
+        audioSource.Play();
         startButton.onClick.AddListener(StartGame);
         quitButton.onClick.AddListener(QuitGame);
         creditButton.onClick.AddListener(Credit);
@@ -30,6 +37,8 @@ public class Menu : MonoBehaviour
 
     private void StartGame()
     {
+        audioSource.clip = playSong;
+        audioSource.Play();
         startGame = true;
         Time.timeScale = 1f;
         startButtonObject.SetActive(false);
@@ -60,9 +69,13 @@ public class Menu : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Player.transform.position != gameCamPosition.position)
-            CameraTranslation();
-        if (Player.transform.position == gameCamPosition.position)
-            gameObject.SetActive(false);
+        if (startGame)
+        {
+            if (Player.transform.position != gameCamPosition.position)
+                CameraTranslation();
+            if (Player.transform.position == gameCamPosition.position)
+                gameObject.SetActive(false);
+        }
+
     }
 }

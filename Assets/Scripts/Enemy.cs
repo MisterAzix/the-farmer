@@ -9,30 +9,34 @@ public class Enemy : MonoBehaviour
     [Range(0, 360)]
     public float angle;
 
-    [SerializeField] private NavMeshAgent agent;
     public GameObject playerRef;
+    [SerializeField] private NavMeshAgent agent;
     [SerializeField] private Transform player;
     [SerializeField] private Animator animator;
+    private PlayerController playerController;
 
+    //Mask
     [SerializeField] LayerMask whatIsGround, whatIsPlayer;
     public LayerMask obstructionMask;
 
     //Patroling
-    [SerializeField] private Vector3 walkPoint;
+    private Vector3 walkPoint;
     private bool walkPointSet;
+    private int currentCheckpoint = 0;
+    [SerializeField] private Transform[] checkpoints;
+
+    //Range
     [SerializeField] private float walkPointRange;
+    public float soundRange, attackRange;
 
     //Attacking
     [SerializeField] private float timeBetweenAttacks;
-    private bool alreadyAttacked;
 
     //States
-    public float soundRange, attackRange;
+    [SerializeField] public bool canSeePlayer;
+    private bool alreadyAttacked;
     private bool playerInSoundRange, playerInAttackRange;
 
-    [SerializeField] public bool canSeePlayer;
-
-    private PlayerController playerController;
 
     private void Awake()
     {
@@ -43,6 +47,20 @@ public class Enemy : MonoBehaviour
         playerController = playerRef.GetComponent<PlayerController>();
 
         StartCoroutine(FOVRoutine());
+    }
+
+    private void Update()
+    {
+        //Check for sight and attack range
+        playerInSoundRange = Physics.CheckSphere(transform.position, soundRange, whatIsPlayer) && playerController.isRunning;
+        playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, whatIsPlayer);
+
+        if (!playerInAttackRange && !canSeePlayer) Patroling();
+        if (!playerInAttackRange && playerInSoundRange || !playerInAttackRange && canSeePlayer) ChasePlayer();
+        if (playerInSoundRange && playerInAttackRange) AttackPlayer();
+
+        if (agent.velocity.magnitude < 1f) animator.SetFloat("Speed", 0);
+        else animator.SetFloat("Speed", agent.velocity.magnitude);
     }
 
     private IEnumerator FOVRoutine()
@@ -80,20 +98,6 @@ public class Enemy : MonoBehaviour
             canSeePlayer = false;
     }
 
-    private void Update()
-    {
-        //Check for sight and attack range
-        playerInSoundRange = Physics.CheckSphere(transform.position, soundRange, whatIsPlayer) && playerController.isRunning;
-        playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, whatIsPlayer);
-
-        if (!playerInAttackRange && !canSeePlayer) Patroling();
-        if (!playerInAttackRange && playerInSoundRange || !playerInAttackRange && canSeePlayer) ChasePlayer();
-        if (playerInSoundRange && playerInAttackRange) AttackPlayer();
-
-        if (agent.velocity.magnitude < 1f) animator.SetFloat("Speed", 0);
-        else animator.SetFloat("Speed", agent.velocity.magnitude);
-    }
-
     private void Patroling()
     {
         animator.SetFloat("Speed", 0.5f);
@@ -104,16 +108,18 @@ public class Enemy : MonoBehaviour
         Vector3 distanceToWalkPoint = transform.position - walkPoint;
 
         //WalkPoint reached
-        if (distanceToWalkPoint.magnitude < 3f) walkPointSet = false;
+        if (distanceToWalkPoint.magnitude < 2f)
+        {
+            int randomIndex = Random.Range(0, (checkpoints.Length - 1));
+            if (randomIndex > (checkpoints.Length * 0.5)) currentCheckpoint = randomIndex;
+            else currentCheckpoint = (currentCheckpoint + 1) % checkpoints.Length;
+            walkPointSet = false;
+        }
     }
 
     private void SearchWalkPoint()
     {
-        //Calculate random point in range
-        float randomZ = Random.Range(-walkPointRange, walkPointRange);
-        float randomX = Random.Range(-walkPointRange, walkPointRange);
-
-        walkPoint = new Vector3(transform.position.x + randomX, transform.position.y, transform.position.z + randomZ);
+        walkPoint = checkpoints[currentCheckpoint].position;
 
         if (Physics.Raycast(walkPoint, -transform.up, 2f, whatIsGround)) walkPointSet = true;
     }

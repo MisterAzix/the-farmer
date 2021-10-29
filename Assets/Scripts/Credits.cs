@@ -11,11 +11,13 @@ public class Credits : MonoBehaviour
     void Start()
     { 
         quitButton.onClick.AddListener(QuitCredits);
+        Time.timeScale = 1f;
     }
 
     private void QuitCredits()
     {
-        SceneManager.LoadScene("SampleScene");
+        Time.timeScale = 0f;
+        SceneManager.LoadScene(0);
     }
 
     // Update is called once per frame
