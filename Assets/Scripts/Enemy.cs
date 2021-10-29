@@ -27,7 +27,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private Transform[] checkpoints;
 
     //Range
-    [SerializeField] private float walkPointRange;
+    //[SerializeField] private float walkPointRange;
     public float soundRange, attackRange;
 
     //Attacking
@@ -121,8 +121,9 @@ public class Enemy : MonoBehaviour
     private void SearchWalkPoint()
     {
         walkPoint = checkpoints[currentCheckpoint].position;
+        walkPointSet = true;
 
-        if (Physics.Raycast(walkPoint, -transform.up, 2f, whatIsGround)) walkPointSet = true;
+        //if (Physics.Raycast(walkPoint, -transform.up, 2f, whatIsGround)) walkPointSet = true;
     }
 
     private void ChasePlayer()
