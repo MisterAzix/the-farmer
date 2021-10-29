@@ -10,10 +10,12 @@ public class PlayerMotor : MonoBehaviour
     [SerializeField] private Camera cam;
     [SerializeField] private int raycastDistance;
     [SerializeField] private GameObject pickObjectText;
+    [SerializeField] private GameObject questUI;
     [SerializeField] private Text questTextUI;
     [SerializeField] private int numberOfObjects;
 
     private bool isCrouched = false;
+    private bool isRunning = false;
     private string questText;
     private float originalHeight;
 
@@ -30,18 +32,18 @@ public class PlayerMotor : MonoBehaviour
 
     private CapsuleCollider playerCol;
 
-
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
         playerCol = GetComponent<CapsuleCollider>();
         originalHeight = playerCol.height;
+        questUI.SetActive(false);
     }
 
-    private void Awake()
-    {
-        pickObjectText.SetActive(false);
-    }
+    //private void Awake()
+    //{
+    //    if (pickObjectText) pickObjectText.SetActive(false);
+    //}
 
     public void Move(Vector3 _velocity)
     {
@@ -57,6 +59,15 @@ public class PlayerMotor : MonoBehaviour
         cameraRotation = _cameraRotation;
     }
 
+    public bool GetIsCrouching()
+    {
+        return isCrouched;
+    }
+
+    public bool GetIsRunning()
+    {
+        return isRunning;
+    }
 
     private void FixedUpdate()
     {
@@ -66,18 +77,28 @@ public class PlayerMotor : MonoBehaviour
 
     private void Update()
     {
-        if(countObjectPicked < 2)
+        //ATH en haut à droite
+        if (countObjectPicked < 2)
         {
-            questText = " / " + numberOfObjects + " partie de l'amulette récupérées";
-        } else
-        {
-            questText = " / " + numberOfObjects +  " parties de l'amulette récupérées";
+            questText = " / " + numberOfObjects + " partie de l'amulette récupérée";
         }
-        Debug.DrawRay(cam.transform.position, cam.transform.forward * raycastDistance, Color.yellow);
-        pickObjectText.SetActive(false);
-        PerformHitDetection();
-        PerformCrouch();
+        else
+        {
+            questText = " / " + numberOfObjects + " parties de l'amulette récupérées";
+        }
         questTextUI.text = countObjectPicked + questText;
+        if (pickObjectText) pickObjectText.SetActive(false);
+
+
+        //Raycast dans la scène
+        Debug.DrawRay(cam.transform.position, cam.transform.forward * raycastDistance, Color.yellow);
+
+
+        //Actions du joueur
+        PerformHitDetection();
+        toggleCrouch();
+        PerformRun();
+        Crouch();
     }
 
     private void PerformMovement()
@@ -90,14 +111,28 @@ public class PlayerMotor : MonoBehaviour
     private void PerformRotation()
     {
         rb.MoveRotation(rb.rotation * Quaternion.Euler(rotation));
-        cam.transform.Rotate(-cameraRotation);
+
+        Vector3 targetCamRotation = cam.transform.eulerAngles + -cameraRotation;
+        if(targetCamRotation.x > 360)
+            targetCamRotation.x -= 360;
+        else if (targetCamRotation.x < 0)
+            targetCamRotation.x += 360;
+
+        if(targetCamRotation.x > 0 && targetCamRotation.x < 70)
+        {
+            cam.transform.eulerAngles = targetCamRotation;
+        }
+        else if(targetCamRotation.x > (360 - 70) && targetCamRotation.x < 360)
+        {
+            cam.transform.eulerAngles = targetCamRotation;
+        }
     }
 
     private void PerformHitDetection()
     {
         if (Physics.Raycast(cam.transform.position, cam.transform.forward, out hit, raycastDistance, LayerMask.GetMask("Pickable Object")))
         {
-            pickObjectText.SetActive(true);
+            if(pickObjectText) pickObjectText.SetActive(true);
             if(Input.GetKeyDown("e"))
             {
                 countObjectPicked++;
@@ -106,24 +141,37 @@ public class PlayerMotor : MonoBehaviour
         }
     }
 
-    private void PerformCrouch()
+    private void PerformRun()
     {
-        if(Input.GetKeyDown("c"))
+        if(Input.GetKeyDown(KeyCode.LeftShift))
         {
-                playerCol.height = reducedHeight;
+            isRunning = true;
         }
-        if(Input.GetKeyUp("c"))
+
+        if (Input.GetKeyUp(KeyCode.LeftShift))
         {
-            
+            isRunning = false;
         }
+    }
+
+    private void toggleCrouch()
+    {
+        if (Input.GetKeyDown("c")) isCrouched = !isCrouched;
     }
 
     private void Crouch()
     {
-        playerCol.height = reducedHeight;
-    }
-    private void GotUp()
-    {
-        playerCol.height = originalHeight;
+        if(isCrouched)
+        {
+            playerCol.height = 2;
+            //playerCol.center.y = 0;
+        }
+            
+        else
+        {
+            playerCol.height = 4;
+            //playerCol.center.y = 2;
+        }
+            
     }
 }
