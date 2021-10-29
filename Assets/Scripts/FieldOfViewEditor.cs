@@ -4,6 +4,7 @@ using UnityEngine;
 [CustomEditor(typeof(Enemy))]
 public class FieldOfViewEditor : Editor
 {
+    #if UNITY_EDITOR
     private void OnSceneGUI()
     {
         Enemy fov = (Enemy)target;
@@ -33,4 +34,6 @@ public class FieldOfViewEditor : Editor
 
         return new Vector3(Mathf.Sin(angleInDegrees * Mathf.Deg2Rad), 0, Mathf.Cos(angleInDegrees * Mathf.Deg2Rad));
     }
+
+    #endif
 }
