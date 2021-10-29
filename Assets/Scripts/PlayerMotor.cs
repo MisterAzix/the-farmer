@@ -10,6 +10,7 @@ public class PlayerMotor : MonoBehaviour
     [SerializeField] private Camera cam;
     [SerializeField] private int raycastDistance;
     [SerializeField] private GameObject pickObjectText;
+    [SerializeField] private GameObject questUI;
     [SerializeField] private Text questTextUI;
     [SerializeField] private int numberOfObjects;
 
@@ -36,12 +37,13 @@ public class PlayerMotor : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         playerCol = GetComponent<CapsuleCollider>();
         originalHeight = playerCol.height;
+        questUI.SetActive(false);
     }
 
-    private void Awake()
-    {
-        if (pickObjectText) pickObjectText.SetActive(false);
-    }
+    //private void Awake()
+    //{
+    //    if (pickObjectText) pickObjectText.SetActive(false);
+    //}
 
     public void Move(Vector3 _velocity)
     {
@@ -76,18 +78,21 @@ public class PlayerMotor : MonoBehaviour
     private void Update()
     {
         //ATH en haut à droite
-        if(countObjectPicked < 2)
+        if (countObjectPicked < 2)
         {
-            questText = " / " + numberOfObjects + " partie de l'amulette récupérées";
-        } else
-        {
-            questText = " / " + numberOfObjects +  " parties de l'amulette récupérées";
+            questText = " / " + numberOfObjects + " partie de l'amulette récupérée";
         }
-        if (questTextUI) questTextUI.text = countObjectPicked + questText;
+        else
+        {
+            questText = " / " + numberOfObjects + " parties de l'amulette récupérées";
+        }
+        questTextUI.text = countObjectPicked + questText;
         if (pickObjectText) pickObjectText.SetActive(false);
+
 
         //Raycast dans la scène
         Debug.DrawRay(cam.transform.position, cam.transform.forward * raycastDistance, Color.yellow);
+
 
         //Actions du joueur
         PerformHitDetection();

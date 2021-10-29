@@ -866,8 +866,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cam: {fileID: 2065331547}
   raycastDistance: 3
-  pickObjectText: {fileID: 0}
-  questTextUI: {fileID: 0}
+  pickObjectText: {fileID: 1341450312}
+  questUI: {fileID: 483055904}
+  questTextUI: {fileID: 483055906}
   numberOfObjects: 2
   countObjectPicked: 0
   reducedHeight: 1
@@ -1764,6 +1765,7 @@ MonoBehaviour:
   camSpeed: 0.1
   gameCamPosition: {fileID: 1362897545}
   Player: {fileID: 860270858}
+  questUI: {fileID: 483055904}
   menuSong: {fileID: 8300000, guid: 3ad8e86f9b65b264dafea2eacef32ec1, type: 3}
   playSong: {fileID: 8300000, guid: a3b93fbe1cf46a04fb841803a6540843, type: 3}
   audioSourceMenu: {fileID: 1624875014}

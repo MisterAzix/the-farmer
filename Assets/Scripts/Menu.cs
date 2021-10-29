@@ -16,6 +16,7 @@ public class Menu : MonoBehaviour
     [SerializeField] private float camSpeed;
     [SerializeField] private Transform gameCamPosition;
     [SerializeField] private GameObject Player;
+    [SerializeField] private GameObject questUI;
 
     public AudioClip menuSong;
     public AudioClip playSong;
@@ -38,6 +39,7 @@ public class Menu : MonoBehaviour
 
     private void StartGame()
     {
+        questUI.SetActive(true);
         audioSourcePlay.clip = playSong;
         audioSourcePlay.Play();
         startGame = true;
@@ -62,7 +64,7 @@ public class Menu : MonoBehaviour
         Player.transform.position = Vector3.Lerp(Player.transform.position, gameCamPosition.position, Time.time * camSpeed);
     }
 
-    public bool getStartGame()
+    public bool GetStartGame()
     {
         return startGame;
     }
@@ -77,6 +79,5 @@ public class Menu : MonoBehaviour
             if (Player.transform.position == gameCamPosition.position)
                 gameObject.SetActive(false);
         }
-
     }
 }
