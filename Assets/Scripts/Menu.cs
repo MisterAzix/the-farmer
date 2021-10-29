@@ -16,10 +16,12 @@ public class Menu : MonoBehaviour
     [SerializeField] private float camSpeed;
     [SerializeField] private Transform gameCamPosition;
     [SerializeField] private GameObject Player;
+    [SerializeField] private GameObject questUI;
 
     public AudioClip menuSong;
     public AudioClip playSong;
-    public AudioSource audioSource;
+    public AudioSource audioSourceMenu;
+    public AudioSource audioSourcePlay;
 
     private bool startGame = false;
 
@@ -27,8 +29,8 @@ public class Menu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        audioSource.clip = menuSong;
-        audioSource.Play();
+        audioSourceMenu.clip = menuSong;
+        audioSourceMenu.Play();
         startButton.onClick.AddListener(StartGame);
         quitButton.onClick.AddListener(QuitGame);
         creditButton.onClick.AddListener(Credit);
@@ -37,8 +39,9 @@ public class Menu : MonoBehaviour
 
     private void StartGame()
     {
-        audioSource.clip = playSong;
-        audioSource.Play();
+        questUI.SetActive(true);
+        audioSourcePlay.clip = playSong;
+        audioSourcePlay.Play();
         startGame = true;
         Time.timeScale = 1f;
         startButtonObject.SetActive(false);
@@ -61,7 +64,7 @@ public class Menu : MonoBehaviour
         Player.transform.position = Vector3.Lerp(Player.transform.position, gameCamPosition.position, Time.time * camSpeed);
     }
 
-    public bool getStartGame()
+    public bool GetStartGame()
     {
         return startGame;
     }
@@ -76,6 +79,5 @@ public class Menu : MonoBehaviour
             if (Player.transform.position == gameCamPosition.position)
                 gameObject.SetActive(false);
         }
-
     }
 }

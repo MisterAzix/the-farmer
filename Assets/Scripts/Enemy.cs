@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.SceneManagement;
 
 public class Enemy : MonoBehaviour
 {
@@ -57,7 +58,7 @@ public class Enemy : MonoBehaviour
 
         if (!playerInAttackRange && !canSeePlayer) Patroling();
         if (!playerInAttackRange && playerInSoundRange || !playerInAttackRange && canSeePlayer) ChasePlayer();
-        if (playerInSoundRange && playerInAttackRange) AttackPlayer();
+        if (playerInAttackRange) AttackPlayer();
 
         if (agent.velocity.magnitude < 1f) animator.SetFloat("Speed", 0);
         else animator.SetFloat("Speed", agent.velocity.magnitude);
@@ -143,8 +144,15 @@ public class Enemy : MonoBehaviour
             animator.SetTrigger("Attack");
 
             alreadyAttacked = true;
+            Invoke(nameof(checkAttackDamage), timeBetweenAttacks / 2);
             Invoke(nameof(ResetAttack), timeBetweenAttacks);
         }
+    }
+
+    private void checkAttackDamage()
+    {
+        if ((player.transform.position - transform.position).magnitude < 3.3f)
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     private void ResetAttack()
