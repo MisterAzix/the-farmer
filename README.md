@@ -1,5 +1,5 @@
 # THE FARMER
 
-Script important :
+Scripts importants :
 - Enemy.cs
 - PlayerMotor.cs & PlayerController.cs
