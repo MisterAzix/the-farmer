@@ -12,13 +12,13 @@ public class PlayerMotor : MonoBehaviour
     [SerializeField] private GameObject pickObjectText;
     [SerializeField] private GameObject questUI;
     [SerializeField] private Text questTextUI;
-    [SerializeField] private int numberOfObjects;
 
     private bool isCrouched = false;
     private bool isRunning = false;
     private string questText;
     private float originalHeight;
 
+    public int numberOfObjects;
     public int countObjectPicked = 0;
     public float reducedHeight;
 
