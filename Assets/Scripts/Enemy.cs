@@ -15,6 +15,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private Transform player;
     [SerializeField] private Animator animator;
     private PlayerController playerController;
+    [SerializeField] private AudioSource audioSource;
 
     //Mask
     [SerializeField] LayerMask whatIsGround, whatIsPlayer;
@@ -37,6 +38,8 @@ public class Enemy : MonoBehaviour
     [SerializeField] public bool canSeePlayer;
     private bool alreadyAttacked;
     private bool playerInSoundRange, playerInAttackRange;
+
+    private float audioVolume = 0f;
 
 
     private void Awake()
@@ -101,6 +104,8 @@ public class Enemy : MonoBehaviour
 
     private void Patroling()
     {
+        fadeOutAudio();
+
         animator.SetFloat("Speed", 0.5f);
 
         if (!walkPointSet) SearchWalkPoint();
@@ -128,7 +133,27 @@ public class Enemy : MonoBehaviour
 
     private void ChasePlayer()
     {
+        fadeInAudio();
+
         agent.SetDestination(player.position);
+    }
+
+    private void fadeInAudio()
+    {
+        if (audioVolume < 1)
+        {
+            audioVolume += 0.3f * Time.deltaTime;
+            audioSource.volume = audioVolume;
+        }
+    }
+
+    private void fadeOutAudio()
+    {
+        if (audioVolume > 0.1)
+        {
+            audioVolume -= 0.3f * Time.deltaTime;
+            audioSource.volume = audioVolume;
+        }
     }
 
     private void AttackPlayer()
@@ -153,7 +178,7 @@ public class Enemy : MonoBehaviour
     private void checkAttackDamage()
     {
         if ((player.transform.position - transform.position).magnitude < 3.3f)
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            SceneManager.LoadScene("Lose");
     }
 
     private void ResetAttack()

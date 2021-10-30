@@ -12,13 +12,13 @@ public class PlayerMotor : MonoBehaviour
     [SerializeField] private GameObject pickObjectText;
     [SerializeField] private GameObject questUI;
     [SerializeField] private Text questTextUI;
-    [SerializeField] private int numberOfObjects;
 
     private bool isCrouched = false;
     private bool isRunning = false;
     private string questText;
     private float originalHeight;
 
+    public int numberOfObjects;
     public int countObjectPicked = 0;
     public float reducedHeight;
 
@@ -80,13 +80,17 @@ public class PlayerMotor : MonoBehaviour
         //ATH en haut à droite
         if (countObjectPicked < 2)
         {
-            questText = " / " + numberOfObjects + " partie de l'amulette récupérée";
+            questText = countObjectPicked + " / " + numberOfObjects + " partie de l'amulette récupérée";
         }
+        else if (countObjectPicked == numberOfObjects)
+        {
+            questText = "Echappe toi !";
+        } 
         else
         {
-            questText = " / " + numberOfObjects + " parties de l'amulette récupérées";
+            questText = countObjectPicked + " / " + numberOfObjects + " parties de l'amulette récupérées";
         }
-        questTextUI.text = countObjectPicked + questText;
+        questTextUI.text = questText;
         if (pickObjectText) pickObjectText.SetActive(false);
 
 
