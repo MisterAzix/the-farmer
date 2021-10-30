@@ -232,7 +232,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 290768824}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2007925963}
@@ -240,8 +240,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 87, y: 678}
-  m_SizeDelta: {x: 136.54, y: 693.06}
+  m_AnchoredPosition: {x: 232, y: -645}
+  m_SizeDelta: {x: 468.055, y: 2414.619}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &290768826
 MonoBehaviour:
@@ -265,11 +265,11 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 2d835064997b0ad44bb86947003206b7, type: 3}
-    m_FontSize: 20
+    m_FontSize: 72
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 0
-    m_MaxSize: 82
+    m_MaxSize: 84
     m_Alignment: 0
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -359,8 +359,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 157, y: -0.0000033379}
-  m_SizeDelta: {x: 36.0388, y: 36.0393}
+  m_AnchoredPosition: {x: 653, y: -38}
+  m_SizeDelta: {x: 138.344, y: 138.346}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &341610338
 MonoBehaviour:
@@ -475,8 +475,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 19.018005, y: 677.9994}
-  m_SizeDelta: {x: 272.5092, y: 693.0562}
+  m_AnchoredPosition: {x: 26.677895, y: -645}
+  m_SizeDelta: {x: 878.7, y: 2414.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1062766336
 MonoBehaviour:
@@ -500,11 +500,11 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 2d835064997b0ad44bb86947003206b7, type: 3}
-    m_FontSize: 20
+    m_FontSize: 72
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 2
-    m_MaxSize: 82
+    m_MaxSize: 84
     m_Alignment: 0
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -512,8 +512,8 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: "Produit par\n\n\n\n\n\nScenario\n\n\nAssets\n\nUI\n\nDeveloppement\n\n\nSound
-    Design\n\nNarration et\nVoix-Off\n\nLevel Design\n\n\n\n                      
-    The farmer\n"
+    Design\n\nNarration et\nVoix-Off\n\nLevel Design\n\n\n\n                  The
+    farmer\n"
 --- !u!222 &1062766337
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -572,12 +572,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96

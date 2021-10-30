@@ -40,6 +40,7 @@ public class Menu : MonoBehaviour
     private void StartGame()
     {
         questUI.SetActive(true);
+        audioSourceMenu.Stop();
         audioSourcePlay.clip = playSong;
         audioSourcePlay.Play();
         startGame = true;
@@ -74,9 +75,9 @@ public class Menu : MonoBehaviour
     {
         if (startGame)
         {
-            if (Player.transform.position != gameCamPosition.position)
+            if (Mathf.Floor(Player.transform.position.x) != Mathf.Floor(gameCamPosition.position.x) && Mathf.Floor(Player.transform.position.y) != Mathf.Floor(gameCamPosition.position.y) || Mathf.Floor(Player.transform.position.z) != Mathf.Floor(gameCamPosition.position.z))
                 CameraTranslation();
-            if (Player.transform.position == gameCamPosition.position)
+            else
                 gameObject.SetActive(false);
         }
     }
