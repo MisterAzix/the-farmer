@@ -178,7 +178,7 @@ public class Enemy : MonoBehaviour
     private void checkAttackDamage()
     {
         if ((player.transform.position - transform.position).magnitude < 3.3f)
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            SceneManager.LoadScene("Lose");
     }
 
     private void ResetAttack()
